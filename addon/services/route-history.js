@@ -79,40 +79,49 @@ export default Service.extend({
 	 * @param route
 	 */
 	setCurrentRoute(route) {
-    const routeName = route.get('routeName');
+    // we have to have a timput here to wait for the url to load
+    setTimeout(()=> {
+      // getting the current url - THIS IS WHAT WE WILL MOSTLY BE USING
+      const url = window.location.href;
 
-    // get all params for this route, this includes both ids passed and query params
-    const allParams = route.paramsFor(`${routeName}`);
+      // Keeping the rest of the below logic in - in case we ever need it
 
-    // Create an object to house the extracted query params
-    const queryParams = {};
+      const routeName = route.get('routeName');
 
-    // Create an object to house all extracted ids
-    const ids = {};
+      // get all params for this route, this includes both ids passed and query params
+      const allParams = route.paramsFor(`${routeName}`);
 
-    // let's loop through all params and figure out if they belong in the ids object or in the queryParams object
-    for (let key in allParams) {
-      if (route.get('queryParams')[`${key}`]) {
-        // we found this param defined in the routes query params
-        // save to the queryParams object (but only if a value is not undefined)
-        if (typeof allParams[`${key}`] !== "undefined") {
-          queryParams[`${key}`] = allParams[`${key}`];
+      // Create an object to house the extracted query params
+      const queryParams = {};
+
+      // Create an object to house all extracted ids
+      const ids = {};
+
+      // let's loop through all params and figure out if they belong in the ids object or in the queryParams object
+      for (let key in allParams) {
+        if (route.get('queryParams')[`${key}`]) {
+          // we found this param defined in the routes query params
+          // save to the queryParams object (but only if a value is not undefined)
+          if (typeof allParams[`${key}`] !== "undefined") {
+            queryParams[`${key}`] = allParams[`${key}`];
+          }
+        } else {
+          // this param was not found in the query params object
+          // save to the ids object
+          ids[`${key}`] = allParams[`${key}`];
         }
-      } else {
-        // this param was not found in the query params object
-        // save to the ids object
-        ids[`${key}`] = allParams[`${key}`];
       }
-    }
 
-		if (routeName !== 'loading') {
-			this.set('current', routeName);
-      // we want to save the route name as well as any query params or ids this route may have
-			this.addRouteToHistory({
-        routeName,
-        queryParams,
-        ids
-      });
-		}
+  		if (routeName !== 'loading') {
+  			this.set('current', routeName);
+        // we want to save the route name as well as any query params or ids this route may have
+  			this.addRouteToHistory({
+          routeName,
+          url,
+          queryParams,
+          ids
+        });
+  		}
+    });
 	}
 });
