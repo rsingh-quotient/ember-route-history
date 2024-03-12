@@ -28,7 +28,7 @@ export default Service.extend({
 	 * @type {String}
 	 */
 	previous: computed('history.[]', function() {
-		const history = this.get('history');
+		const history = this.history;
 		const historyLength = history.get('length');
 
 		if (!isEmpty(history) && historyLength > 1) {
@@ -62,8 +62,8 @@ export default Service.extend({
 	 * @return The current history stack.
 	 */
 	addRouteToHistory(routeName) {
-		const maxHistoryLength = this.get('maxHistoryLength');
-		let history = this.get('history');
+		const maxHistoryLength = this.maxHistoryLength;
+		let history = this.history;
 
 		history.pushObject(routeName);
 
@@ -86,7 +86,7 @@ export default Service.extend({
 
       // Keeping the rest of the below logic in - in case we ever need it
 
-      const routeName = route.get('routeName');
+      const routeName = route.routeName;
 
       // get all params for this route, this includes both ids passed and query params
       const allParams = route.paramsFor(`${routeName}`);
@@ -99,7 +99,7 @@ export default Service.extend({
 
       // let's loop through all params and figure out if they belong in the ids object or in the queryParams object
       for (let key in allParams) {
-        if (route.get('queryParams')[`${key}`]) {
+        if (route.queryParams[`${key}`]) {
           // we found this param defined in the routes query params
           // save to the queryParams object (but only if a value is not undefined)
           if (typeof allParams[`${key}`] !== "undefined") {
